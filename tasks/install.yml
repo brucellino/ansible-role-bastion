@@ -5,14 +5,28 @@
     name: "{{ item }}"
   loop: "{{ prerequisites[ansible_os_family|lower] }}"
 
-- name: Ensure build dir is present
+- name: Ensure relevant dirs are present
   file:
-    path: "{{ ssh.build_dir }}"
+    path: "{{ item }}"
     state: directory
     recurse: true
+  loop:
+    - "{{ ssh.build_dir }}"
+    - "{{ ssh.install_dir }}"
 
 - name: Get ssh source
   unarchive:
     src: "{{ ssh.base_url }}/openssh-{{ ssh.version }}.tar.gz"
     dest: "{{ ssh.build_dir }}"
     remote_src: true
+
+- name: Build ssh
+  command: ./configure {{ ssh.configure_flags }} --prefix="{{ ssh.install_dir }}"
+  args:
+    chdir: "{{ ssh.build_dir }}/openssh-{{ ssh.version }}"
+
+- name: Install SSH
+  command: make install
+  args:
+    chdir: "{{ ssh.build_dir }}/openssh-{{ ssh.version }}"
+    creates: "{{ ssh.install_dir }}/bin/openssh"
