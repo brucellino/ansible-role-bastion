@@ -8,12 +8,9 @@ The role is tested on AWS EC2, so you will need `boto`.
 
 ## Role Variables
 
-
 ## Dependencies
 
-
 ## Example Playbook
-
 
     - hosts: servers
       roles:
