@@ -1,2 +1,12 @@
 ---
 # defaults file for ansible-role-bastion
+prerequisites:
+  debian:
+    - zlib1g
+    - zlib1g-dev
+    - libssl1.1
+    - libssl-dev
+ssh:
+  base_url: https://ftp.openbsd.org/pub/OpenBSD/OpenSSH/portable/
+  version: 7.9p1
+  build_dir: /incoming/openssh/

@@ -70,6 +70,7 @@
         wait: true
         assign_public_ip: true
         exact_count: 1
+        region: "{{ item.region }}"
         count_tag:
           instance: "{{ item.name }}"
       register: server

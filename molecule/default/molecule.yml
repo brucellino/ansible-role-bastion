@@ -7,11 +7,18 @@ lint:
   name: yamllint
 platforms:
   - name: instance
-    image: ami-a5b196c0
+    image: ami-0204cddbf060b2420
     instance_type: t2.micro
-    vpc_subnet_id: subnet-6456fd1f
+    vpc_subnet_id: subnet-2ed37a48
+    region: eu-west-1
 provisioner:
   name: ansible
+  config_options:
+    defaults:
+      callback_whitelist:
+        - slack
+        - yaml
+      stdout_callback: yaml
   lint:
     name: ansible-lint
 scenario:
