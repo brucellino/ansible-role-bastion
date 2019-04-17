@@ -14,14 +14,33 @@
     - "{{ ssh.build_dir }}"
     - "{{ ssh.install_dir }}"
 
-- name: Get ssh source
-  unarchive:
-    src: "{{ ssh.base_url }}/openssh-{{ ssh.version }}.tar.gz"
-    dest: "{{ ssh.build_dir }}"
-    remote_src: true
+- name: Get ssh
+  block:
+    - name: Get ssh source
+      unarchive:
+        src: "{{ ssh.base_url }}/openssh-{{ ssh.version }}.tar.gz"
+        dest: "{{ ssh.build_dir }}"
+        remote_src: true
+  rescue:
+    - name: Get SSH Source
+      get_url:
+        dest: "{{ ssh.build_dir }}/openssh-{{ ssh.version }}.tar.gz"
+        url: "{{ ssh.base_url }}/openssh-{{ ssh.version }}.tar.gz"
+        backup: no
+        force: no
+        owner: root
+        group: root
+        validate_certs: yes
+    - name: Unpack SSH source
+      unarchive:
+        src: "{{ ssh.build_dir }}/openssh-{{ ssh.version }}.tar.gz"
+        dest: "{{ ssh.build_dir }}"
+        remote_src: yes
+        creates: "{{ ssh.build_dir }}/openssh-{{ ssh.version }}/configure"
+        owner: root
 
 - name: Build ssh
-  command: ./configure {{ ssh.configure_flags }} --prefix="{{ ssh.install_dir }}"
+  command: "./configure {{ ssh.configure_flags }} --prefix={{ ssh.install_dir }}"
   args:
     chdir: "{{ ssh.build_dir }}/openssh-{{ ssh.version }}"
     creates: Makefile

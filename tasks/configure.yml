@@ -39,7 +39,7 @@
 - name: Template sshd_config and set permissions to root/600
   template:
     src: "opensshd.conf.j2"
-    dest: "/etc/ssh/sshd_config_proposed"
+    dest: "/etc/ssh/sshd_config"
     mode: "0600"
     owner: "{{ ssh_owner }}"
     group: "{{ ssh_group }}"
