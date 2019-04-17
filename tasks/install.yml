@@ -24,6 +24,7 @@
   command: ./configure {{ ssh.configure_flags }} --prefix="{{ ssh.install_dir }}"
   args:
     chdir: "{{ ssh.build_dir }}/openssh-{{ ssh.version }}"
+    creates: Makefile
 
 - name: Install SSH
   command: make install

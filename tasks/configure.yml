@@ -43,7 +43,7 @@
     mode: "0600"
     owner: "{{ ssh_owner }}"
     group: "{{ ssh_group }}"
-    validate: "{{ ssh.install_dir}}sbin/sshd -T -C user=root -C host=localhost -C addr=localhost -f %s"
+    validate: "{{ ssh.install_dir }}sbin/sshd -T -C user=root -C host=localhost -C addr=localhost -f %s"
   notify: restart sshd
   tags:
     - server
