@@ -3,6 +3,7 @@ galaxy_info:
   author: Bruce Becker
   description: An Ansible role to provision a bastion host
   company: Aptus EU
+  role_name: bastion
   license: MIT
   min_ansible_version: 2.4
   platforms:
