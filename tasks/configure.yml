@@ -7,13 +7,63 @@
     owner: "{{ ssh_owner }}"
     group: "{{ ssh_group }}"
   notify: restart sshd
+  tags:
+    - server
 
-- name: create sshd_config and set permissions to root/600
+- name: ensure host public keys are present
+  copy:
+    dest: "/etc/ssh/"
+    src: "{{ item }}"
+    remote_src: no
+    group: root
+    mode: 0644
+    owner: root
+    follow: no
+  loop: "{{ lookup('fileglob','files/etc/ssh/*.pub',wantlist=True) }}"
+  tags:
+    - server
+
+- name: Ensure host private keys are present
+  copy:
+    dest: "/etc/ssh/"
+    src: "{{ item }}"
+    remote_src: no
+    group: root
+    mode: 0600
+    owner: root
+    follow: no
+  loop: "{{ lookup('fileglob','files/etc/ssh/*_key', wantlist=True) }}"
+  tags:
+    - server
+
+- name: Template sshd_config and set permissions to root/600
   template:
     src: "opensshd.conf.j2"
-    dest: "/etc/ssh/sshd_config"
+    dest: "/etc/ssh/sshd_config_proposed"
     mode: "0600"
     owner: "{{ ssh_owner }}"
     group: "{{ ssh_group }}"
-    validate: "'{{ ssh.install_dir}}/sbin/sshd -T -C user=root -C host=localhost -C addr=localhost -f %s'"
+    validate: "{{ ssh.install_dir}}sbin/sshd -T -C user=root -C host=localhost -C addr=localhost -f %s"
+  notify: restart sshd
+  tags:
+    - server
+
+- name: Template ssh_config and set permissions to root/644
+  template:
+    src: openssh.conf.j2
+    dest: /etc/ssh/ssh_config
+    mode: 0600
+    owner: root
+    group: root
+  tags:
+    - client
+
+- name: Template systemd service file
+  template:
+    src: sshd.service.j2
+    dest: /lib/systemd/system/sshd.service
+    remote_src: no
+    group: root
+    owner: root
+    mode: 0600
   notify: restart sshd

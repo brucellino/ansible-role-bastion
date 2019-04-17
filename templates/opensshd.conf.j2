@@ -96,9 +96,7 @@ IgnoreUserKnownHosts yes
 HostbasedAuthentication no
 
 # Enable PAM to enforce system wide rules
-{% if ssh_pam_support -%}
 UsePAM {{ 'yes' if (ssh_use_pam|bool) else 'no' }}
-{% endif %}
 {% if ssh_google_auth %}
 # Force public key auth then ask for google auth code
 AuthenticationMethods publickey,keyboard-interactive
@@ -114,13 +112,11 @@ PasswordAuthentication {{ 'yes' if (ssh_server_password_login|bool) else 'no' }}
 PermitEmptyPasswords no
 ChallengeResponseAuthentication {{ 'yes' if (ssh_challengeresponseauthentication|bool) else 'no' }}
 
-{% if ssh_kerberos_support -%}
 # Only enable Kerberos authentication if it is configured.
-KerberosAuthentication no
+KerberosAuthentication {{ 'yes' if (ssh_kerberos_support|bool) else 'no'}}
 KerberosOrLocalPasswd no
 KerberosTicketCleanup yes
 #KerberosGetAFSToken no
-{% endif %}
 
 # Only enable GSSAPI authentication if it is configured.
 GSSAPIAuthentication {{ 'yes' if ssh_gssapi_support else 'no' }}
@@ -216,11 +212,7 @@ PrintLastLog {{ 'yes' if (ssh_print_last_log|bool) else 'no' }}
 {% endif %}
 
 Banner {{ '/etc/ssh/banner.txt' if (ssh_banner|bool) else 'none' }}
-
-{% if ansible_os_family == 'Debian' %}
-DebianBanner {{ 'yes' if (ssh_print_debian_banner|bool) else 'no' }}
-{% endif %}
-
+# DebianBanner {{ 'yes' if (ssh_print_debian_banner|bool) else 'no' }}
 # Reject keys that are explicitly blacklisted
 RevokedKeys /etc/ssh/revoked_keys
 

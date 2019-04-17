@@ -2,5 +2,9 @@
 # tasks file for ansible-role-bastion
 - import_tasks: install.yml
   become: true
+  tags:
+    - install
 - import_tasks: configure.yml
   become: true
+  tags:
+    - configure

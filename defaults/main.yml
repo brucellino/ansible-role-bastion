@@ -65,7 +65,7 @@ ssh_allow_agent_forwarding: false # sshd
 # true if SSH has PAM support
 ssh_pam_support: true
 # false to disable pam authentication.
-ssh_use_pam: false # sshd
+ssh_use_pam: true # sshd
 # false to disable google 2fa authentication
 ssh_google_auth: false # sshd
 # false to disable pam device 2FA input
@@ -73,11 +73,11 @@ ssh_pam_device: false # sshd
 # true if SSH support GSSAPI
 ssh_gssapi_support: false
 # true if SSH support Kerberos
-ssh_kerberos_support: true
+ssh_kerberos_support: false
 # if specified, login is disallowed for user names that match one of the patterns.
 ssh_deny_users: "" # sshd
 # if specified, login is allowed only for user names that match one of the patterns.
-ssh_allow_users: "" # sshd
+ssh_allow_users: "ubuntu" # sshd
 # if specified, login is disallowed for users whose primary group or supplementary group list matches one of the patterns.
 ssh_deny_groups: "" # sshd
 # if specified, login is allowed only for users whose primary group or supplementary group list matches one of the patterns.
@@ -130,7 +130,6 @@ ssh_server_match_group: false # sshd
 ssh_server_permit_environment_vars: false
 # maximum number of concurrent unauthenticated connections to the SSH daemon
 ssh_max_startups: "10:30:100" # sshd
-ssh_ps59: "sandbox"
 ssh_macs:
   - hmac-sha2-512-etm@openssh.com
   - hmac-sha2-256-etm@openssh.com
