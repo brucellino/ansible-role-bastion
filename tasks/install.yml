@@ -2,30 +2,30 @@
 - name: Ensure prerequisites
   package:
     state: present
-    name: "{{ item }}"
-  loop: "{{ prerequisites[ansible_os_family|lower] }}"
+    name: '{{ item }}'
+  loop: '{{ prerequisites[ansible_os_family|lower] }}'
 
 - name: Ensure relevant dirs are present
   file:
-    path: "{{ item }}"
+    path: '{{ item }}'
     state: directory
     recurse: true
   loop:
-    - "{{ ssh.build_dir }}"
-    - "{{ ssh.install_dir }}"
+    - '{{ ssh.build_dir }}'
+    - '{{ ssh.install_dir }}'
 
 - name: Get ssh
   block:
     - name: Get ssh source
       unarchive:
-        src: "{{ ssh.base_url }}/openssh-{{ ssh.version }}.tar.gz"
-        dest: "{{ ssh.build_dir }}"
+        src: '{{ ssh.base_url }}/openssh-{{ ssh.version }}.tar.gz'
+        dest: '{{ ssh.build_dir }}'
         remote_src: true
   rescue:
     - name: Get SSH Source
       get_url:
-        dest: "{{ ssh.build_dir }}/openssh-{{ ssh.version }}.tar.gz"
-        url: "{{ ssh.base_url }}/openssh-{{ ssh.version }}.tar.gz"
+        dest: '{{ ssh.build_dir }}/openssh-{{ ssh.version }}.tar.gz'
+        url: '{{ ssh.base_url }}/openssh-{{ ssh.version }}.tar.gz'
         backup: no
         force: no
         owner: root
@@ -33,20 +33,20 @@
         validate_certs: yes
     - name: Unpack SSH source
       unarchive:
-        src: "{{ ssh.build_dir }}/openssh-{{ ssh.version }}.tar.gz"
-        dest: "{{ ssh.build_dir }}"
+        src: '{{ ssh.build_dir }}/openssh-{{ ssh.version }}.tar.gz'
+        dest: '{{ ssh.build_dir }}'
         remote_src: yes
-        creates: "{{ ssh.build_dir }}/openssh-{{ ssh.version }}/configure"
+        creates: '{{ ssh.build_dir }}/openssh-{{ ssh.version }}/configure'
         owner: root
 
 - name: Build ssh
-  command: "./configure {{ ssh.configure_flags }} --prefix={{ ssh.install_dir }}"
+  command: './configure {{ ssh.configure_flags }} --prefix={{ ssh.install_dir }}'
   args:
-    chdir: "{{ ssh.build_dir }}/openssh-{{ ssh.version }}"
+    chdir: '{{ ssh.build_dir }}/openssh-{{ ssh.version }}'
     creates: Makefile
 
 - name: Install SSH
   command: make install
   args:
-    chdir: "{{ ssh.build_dir }}/openssh-{{ ssh.version }}"
-    creates: "{{ ssh.install_dir }}/bin/openssh"
+    chdir: '{{ ssh.build_dir }}/openssh-{{ ssh.version }}'
+    creates: '{{ ssh.install_dir }}/bin/openssh'

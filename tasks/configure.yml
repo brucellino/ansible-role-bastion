@@ -1,19 +1,19 @@
 ---
 - name: create revoked_keys and set permissions to root/600
   template:
-    src: "revoked_keys.j2"
-    dest: "/etc/ssh/revoked_keys"
-    mode: "0600"
-    owner: "{{ ssh_owner }}"
-    group: "{{ ssh_group }}"
+    src: 'revoked_keys.j2'
+    dest: '/etc/ssh/revoked_keys'
+    mode: '0600'
+    owner: '{{ ssh_owner }}'
+    group: '{{ ssh_group }}'
   notify: restart sshd
   tags:
     - server
 
 - name: ensure host public keys are present
   copy:
-    dest: "/etc/ssh/"
-    src: "{{ item }}"
+    dest: '/etc/ssh/'
+    src: '{{ item }}'
     remote_src: no
     group: root
     mode: 0644
@@ -25,8 +25,8 @@
 
 - name: Ensure host private keys are present
   copy:
-    dest: "/etc/ssh/"
-    src: "{{ item }}"
+    dest: '/etc/ssh/'
+    src: '{{ item }}'
     remote_src: no
     group: root
     mode: 0600
@@ -38,12 +38,12 @@
 
 - name: Template sshd_config and set permissions to root/600
   template:
-    src: "opensshd.conf.j2"
-    dest: "/etc/ssh/sshd_config"
-    mode: "0600"
-    owner: "{{ ssh_owner }}"
-    group: "{{ ssh_group }}"
-    validate: "{{ ssh.install_dir }}sbin/sshd -T -C user=root -C host=localhost -C addr=localhost -f %s"
+    src: 'opensshd.conf.j2'
+    dest: '/etc/ssh/sshd_config'
+    mode: '0600'
+    owner: '{{ ssh_owner }}'
+    group: '{{ ssh_group }}'
+    validate: '{{ ssh.install_dir }}sbin/sshd -T -C user=root -C host=localhost -C addr=localhost -f %s'
   notify: restart sshd
   tags:
     - server
@@ -52,7 +52,7 @@
   template:
     src: openssh.conf.j2
     dest: /etc/ssh/ssh_config
-    mode: 0600
+    mode: 0644
     owner: root
     group: root
   tags:
